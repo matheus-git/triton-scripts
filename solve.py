@@ -20,13 +20,18 @@ ctx.setConcreteRegisterValue(ctx.registers.rbp, RSP)
 buffer_addr = RSP + 0x20
 BUFFER_SIZE = 8
 
+addr = buffer_addr
 for i in range(BUFFER_SIZE):
-    addr = buffer_addr + i
     ctx.setConcreteMemoryValue(addr, 0x41)
     ctx.symbolizeMemory(MemoryAccess(addr, CPUSIZE.BYTE))
+    addr = addr + 1
+
+ctx.taintMemory(buffer_addr+1)
 
 ip = BASE
 end = BASE + len(CODE)
+
+final_xor = None
 
 while BASE <= ip < end:
     inst = Instruction()
@@ -34,5 +39,14 @@ while BASE <= ip < end:
     inst.setOpcode(ctx.getConcreteMemoryAreaValue(ip, 15))
     ctx.processing(inst)
 
-    print(inst)
+    if inst.isTainted() and inst.getDisassembly().startswith("xor"):
+        print('[tainted] %s' %(str(inst)))
+        dl_value = ctx.getConcreteRegisterValue(ctx.registers.dl)
+        if final_xor == None:
+            final_xor = dl_value
+        else:
+            final_xor = final_xor ^ dl_value
+
     ip = ctx.getConcreteRegisterValue(ctx.registers.rip)
+
+print(hex(final_xor))
