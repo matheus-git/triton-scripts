@@ -50,3 +50,10 @@ while BASE <= ip < end:
     ip = ctx.getConcreteRegisterValue(ctx.registers.rip)
 
 print(hex(final_xor))
+'''
+[tainted] 0x401025: xor r8b, dl
+[tainted] 0x401025: xor r8b, dl
+[tainted] 0x401025: xor r8b, dl
+[tainted] 0x401025: xor r8b, dl
+0x22
+'''
