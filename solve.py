@@ -1,3 +1,4 @@
+# https://crackmes.one/crackme/694dc5b60c16072f40f5a43c
 from triton import TritonContext, ARCH, Instruction, MODE, MemoryAccess, CPUSIZE, AST_REPRESENTATION
 
 CODE = bytes.fromhex(
